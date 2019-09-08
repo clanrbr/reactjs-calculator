@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "prop-types": "^15.7.2",
     "react": "^16.9.0",
+    "react-bootstrap": "^1.0.0-beta.12",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "NODE_ENV=test mocha --require babel-register.js --require ignore-styles --require testSetup.js  src/**/*_spec.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -27,5 +29,27 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.6.0",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/register": "^7.6.0",
+    "babel-plugin-inline-react-svg": "^1.1.0",
+    "babel-preset-react-app-babel-7": "^4.0.2-0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-enzyme": "^1.0.0-beta.1",
+    "cheerio": "^1.0.0-rc.3",
+    "dirty-chai": "^2.0.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "expect": "^24.9.0",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "^15.1.1",
+    "mocha": "^6.2.0",
+    "react-addons-test-utils": "^15.6.2",
+    "sinon": "^7.4.2",
+    "sinon-chai": "^3.3.0"
   }
 }
