@@ -21,7 +21,6 @@ const SaveButtonContainer = ({ btnHandler, enableButton }) => {
 }
 
 const { func, bool } = PropTypes
-
 SaveButtonContainer.propTypes = {
   btnHandler: func.isRequired,
   enableButton: bool.isRequired

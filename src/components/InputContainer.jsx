@@ -21,12 +21,13 @@ const InputContainer = ({ handleNumberChange, inputPlaceholder, inputName, defau
   )
 }
 
-const { string, func } = PropTypes
+const { string, func, number } = PropTypes
 
 InputContainer.propTypes = {
   handleNumberChange: func.isRequired,
   inputPlaceholder: string.isRequired,
-  inputName: string.isRequired
+  inputName: string.isRequired,
+  defaultValue: PropTypes.oneOfType([string, number])
 }
 
 export default InputContainer

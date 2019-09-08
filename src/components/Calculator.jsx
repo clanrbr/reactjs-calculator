@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Container } from 'react-bootstrap'
 import OperationButtonContainer from './OperationButtonContainer'
 import InputContainer from './InputContainer'
 import ResultContainer from './ResultContainer'
 import EqualButtonContainer from './EqualButtonContainer'
 import SaveButtonContainer from './SaveButtonContainer'
 import MemoryResultsContainer from './MemoryResultsContainer'
+import { checkInputForNumber, doMath, compareRecords } from './utils'
 
 const DEFAULT_NOT_A_NUMBER_ERROR = 'Please enter valid numbers'
 const DEFAULT_FORBIDDEN_OPERATION_ERROR = 'Forbidden operation: division by zero'
@@ -29,43 +29,25 @@ export class Calculator extends Component {
     }
   }
 
-  checkInputForNumber(value) {
-    return typeof(value) === 'number' ? true : false
+  _calculateResult () {
+    const { inputOne, inputTwo, operation } = this.state
+    return doMath({ inputOne, inputTwo, operation })
   }
 
-  roundUp(number) {
-    return Math.round(number * 100) / 100
-  }
-
-  calculateResult () {
+  _updateResult() {
     const { inputOne, inputTwo, operation } = this.state
-
-    switch (operation) {
-      case 'minus':
-        return this.roundUp(parseFloat(inputOne) - parseFloat(inputTwo))
-      case 'times':
-        return this.roundUp(parseFloat(inputOne) * parseFloat(inputTwo))
-      case 'divide':
-        return this.roundUp(parseFloat(inputOne) / parseFloat(inputTwo))
-      default:
-        return this.roundUp(parseFloat(inputOne) + parseFloat(inputTwo))
-    }
-  } 
-
-  updateResult() {
-    const { inputOne, inputTwo, operation } = this.state
-    if (!this.checkInputForNumber(inputOne) || !this.checkInputForNumber(inputTwo)) {
+    if (!checkInputForNumber(inputOne) || !checkInputForNumber(inputTwo)) {
       this.setState({ result: DEFAULT_NOT_A_NUMBER_ERROR })
       this.setState({ enableSaveButton: false })
-      return 
+      return null
     }
 
     if (inputTwo === 0 && operation === 'divide') {
       this.setState({ result: DEFAULT_FORBIDDEN_OPERATION_ERROR })
       this.setState({ enableSaveButton: false })
-      return
+      return null
     }
-    this.setState({ result: this.calculateResult() }, function () {
+    this.setState({ result: this._calculateResult() }, function () {
       this.setState({ enableSaveButton: this._shouldEnableSaveButton() })
     })
   }
@@ -73,40 +55,31 @@ export class Calculator extends Component {
   _handleNumberChange (event) {
     const changedField = event.currentTarget.name
     const changedValue = event.currentTarget.value
-    const convertedValue = (isNaN(Number(changedValue)) || changedValue.length === 0) ? changedValue : Number(changedValue)
+    if (!['inputOne', 'inputTwo'].includes(changedField)) return null
 
+    const convertedValue = (isNaN(Number(changedValue)) || changedValue.length === 0) ? changedValue : Number(changedValue)
     this.setState({ [changedField]: convertedValue }, function () {
-      this.updateResult()
+      this._updateResult()
     })
   }
 
   _handleButtonClick (event) {
     const operation = event.currentTarget.getAttribute('data-value')
-    if (this.state.operation !== operation) {
+    if (this.state.operation !== operation && ['plus', 'minus', 'times', 'divide'].includes(operation)) {
       this.setState({ operation}, function () {
-        this.updateResult()
+        this._updateResult()
       })
     }
   }
 
   _shouldEnableSaveButton() {
     const { savedResults, inputOne, inputTwo, operation, result } = this.state
-    if (inputOne.length === 0 && inputTwo.length === 0 || result.length === 0) return false
-    if (savedResults.length === 0) return true
-
-    const latestRecord = savedResults[savedResults.length - 1]
-    if (latestRecord.operation === operation &&
-      (latestRecord.inputOne === inputOne && latestRecord.inputTwo === inputTwo) ||
-      (latestRecord.inputOne === inputTwo && latestRecord.inputTwo === inputOne) ) {
-      return false
-    }
-
-    return true
+    return compareRecords({ savedResults, inputOne, inputTwo, operation, result })
   }
 
   _saveCalculation () {
-    const { inputOne, inputTwo, operation, result, } = this.state
-    if (!this._shouldEnableSaveButton()) return false
+    const { inputOne, inputTwo, operation, result } = this.state
+    if (!this._shouldEnableSaveButton()) return null
     const savedResults = [...this.state.savedResults, {
       inputOne,
       inputTwo,
@@ -121,22 +94,17 @@ export class Calculator extends Component {
 
   _loadCalculation(event) {
     const resultIndex = event.currentTarget.getAttribute('data-value')
-    const savedResult = this.state.savedResults[resultIndex] 
-    if (!savedResult) return
+    if (this.state.savedResults.length - 1 < resultIndex) return null
 
-    this.setState({
-      inputOne: savedResult.inputOne,
-      inputTwo: savedResult.inputTwo,
-      operation: savedResult.operation,
-      result: savedResult.result
-    }, function () {
+    const { inputOne, inputTwo, operation, result } = this.state.savedResults[resultIndex]
+    this.setState({ inputOne, inputTwo, operation, result }, function () {
       this.setState({ enableSaveButton: false })
     })
   }
 
   render() {
     return (
-      <Container>
+      <div className='container'>
         <form>
           <InputContainer defaultValue={this.state.inputOne} handleNumberChange = {this._handleNumberChange} inputPlaceholder = 'input_1' inputName = 'inputOne' />
           <OperationButtonContainer activeButton={this.state.operation} btnHandler = {this._handleButtonClick} />
@@ -146,7 +114,7 @@ export class Calculator extends Component {
           <SaveButtonContainer btnHandler={this._saveCalculation} enableButton={this.state.enableSaveButton} />
           <MemoryResultsContainer loadCalculation={this._loadCalculation} memoryResults={this.state.savedResults} />
         </form>
-      </Container>
+      </div>
     )
   }
 }
