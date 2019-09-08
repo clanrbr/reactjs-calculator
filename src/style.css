@@ -47,4 +47,9 @@
   }
 }
 
+.list-group {
+  height: 200px;
+  overflow: scroll;
+}
+
 .pointer {cursor: pointer;}
