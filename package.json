@@ -47,7 +47,6 @@
     "ignore-styles": "^5.0.1",
     "jsdom": "^15.1.1",
     "mocha": "^6.2.0",
-    "react-addons-test-utils": "^15.6.2",
     "sinon": "^7.4.2",
     "sinon-chai": "^3.3.0"
   }

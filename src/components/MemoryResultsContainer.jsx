@@ -21,7 +21,16 @@ const MemoryResultsContainer = ({ memoryResults, loadCalculation }) => {
         {canShowMemory && <ul className='list-group list-group-flush'>
             {memoryResults.map(function(record, index) {
               return (
-                <li key={index} data-value={index} onClick={loadCalculation} role='tab' tabIndex='-1' className='list-group-item'>{pritifyCalculation(record)}</li>
+                <li
+                  key={index}
+                  data-value={index}
+                  onClick={loadCalculation}
+                  role='tab'
+                  tabIndex='-1'
+                  className='list-group-item pointer'
+                >
+                  {` ${index+1}) ${pritifyCalculation(record)}`}
+                </li>
               )
             })}
           </ul>

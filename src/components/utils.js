@@ -27,9 +27,10 @@ const compareRecords = (props) => {
   if (savedResults.length === 0) return true
 
   const latestRecord = savedResults[savedResults.length - 1]
-  if (latestRecord.operation === operation &&
-    (latestRecord.inputOne === inputOne && latestRecord.inputTwo === inputTwo) ||
-    (latestRecord.inputOne === inputTwo && latestRecord.inputTwo === inputOne) ) {
+
+  if (latestRecord.operation === operation && 
+    ((latestRecord.inputOne === inputOne && latestRecord.inputTwo === inputTwo) ||
+    (latestRecord.inputOne === inputTwo && latestRecord.inputTwo === inputOne)) ) {
     return false
   }
 

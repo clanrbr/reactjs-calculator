@@ -98,7 +98,7 @@ export class Calculator extends Component {
 
     const { inputOne, inputTwo, operation, result } = this.state.savedResults[resultIndex]
     this.setState({ inputOne, inputTwo, operation, result }, function () {
-      this.setState({ enableSaveButton: false })
+      this.setState({ enableSaveButton: this._shouldEnableSaveButton() })
     })
   }
 
@@ -106,9 +106,9 @@ export class Calculator extends Component {
     return (
       <div className='container'>
         <form>
-          <InputContainer defaultValue={this.state.inputOne} handleNumberChange = {this._handleNumberChange} inputPlaceholder = 'input_1' inputName = 'inputOne' />
+          <InputContainer defaultValue={this.state.inputOne} handleNumberChange = {this._handleNumberChange} inputPlaceholder = 'Number 1' inputName = 'inputOne' />
           <OperationButtonContainer activeButton={this.state.operation} btnHandler = {this._handleButtonClick} />
-          <InputContainer defaultValue={this.state.inputTwo} handleNumberChange = {this._handleNumberChange} inputPlaceholder = 'input_2' inputName = 'inputTwo' />
+          <InputContainer defaultValue={this.state.inputTwo} handleNumberChange = {this._handleNumberChange} inputPlaceholder = 'Number 2' inputName = 'inputTwo' />
           <EqualButtonContainer />
           <ResultContainer inputValue={this.state.result} />
           <SaveButtonContainer btnHandler={this._saveCalculation} enableButton={this.state.enableSaveButton} />
